@@ -51,9 +51,12 @@ void ComputeAndSaveSphereParametrs(const string &input_sphere_filename, int thre
   for (int i = 0; i < max_rows; i++){
     for (int j = 0; j < max_cols; j++){
       if (image.GetPixel(i, j) >= threshold) {
+        // Find sums to find centroid
         sum_rows += i;
         sum_cols += j;
         area++;
+
+        // Find minimums and maximums to calculate radius
         leftmost_x = i < leftmost_x ? i : leftmost_x;
         rightmost_x = i > rightmost_x ? i : rightmost_x;
         lowermost_y = j > lowermost_y ? j : lowermost_y;
@@ -62,8 +65,11 @@ void ComputeAndSaveSphereParametrs(const string &input_sphere_filename, int thre
     }
   }
 
+  // Find average of each point's coordinates
   double center_x = double(sum_rows)/area;
   double center_y = double(sum_cols)/area;
+
+  // Find half of the average of horizontal and vertical diameter to find radius
   int horizontal_diameter = rightmost_x - leftmost_x;
   int vertical_diameter = lowermost_y - uppermost_y;
   double diameter = double(horizontal_diameter + vertical_diameter)/2;
