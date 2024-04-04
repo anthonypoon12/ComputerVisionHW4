@@ -28,6 +28,35 @@ void ComputeAndSaveDirections(const string &input_params_filename, const array<s
   cout << "Sphere image filename 2: " << input_sphere_filenames[1] << endl;
   cout << "Sphere image filename 3: " << input_sphere_filenames[2] << endl;
   cout << "Output directions filename: " << output_directions_filename << endl;
+
+  // Find brightest point in image
+  for (string filename: input_sphere_filenames) {
+    Image image;
+    if (!ReadImage(filename, &image)) {
+      cout <<"Can't open file " << filename << endl;
+      return;
+    }
+
+    // Number of rows and columns in the image
+    size_t max_rows = image.num_rows();
+    size_t max_cols = image.num_columns();
+
+    int max_brightness = 0;
+    int bright_x = 0;
+    int bright_y = 0;
+
+    for (int i = 0; i < max_rows; i++) {
+      for (int j = 0; j < max_cols; j++) {
+        int brightness = image.GetPixel(i, j);
+        if (brightness > max_brightness) {
+          max_brightness = brightness;
+          bright_x = i;
+          bright_y = j;
+        }
+      }
+    }
+  }
+
 }
 
 int main(int argc, char **argv){  
