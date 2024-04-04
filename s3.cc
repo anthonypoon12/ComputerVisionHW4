@@ -10,6 +10,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <array>
 
 using namespace std;
 using namespace ComputerVisionProjects;
