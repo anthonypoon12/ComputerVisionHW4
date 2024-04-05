@@ -34,6 +34,7 @@ void ComputeAndSaveDirections(const string &input_params_filename, const array<s
   double center_x;
   double center_y;
   double radius;
+  file >> center_x >> center_y >> radius;
   file.close();
 
   // Find brightest point in image
