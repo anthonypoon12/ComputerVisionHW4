@@ -15,6 +15,7 @@
 #include <fstream>
 #include <sstream>
 #include <cmath>
+#include <float.h>
 
 using namespace std;
 using namespace ComputerVisionProjects;
@@ -171,38 +172,52 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
   }
 
   Image output_normals_image = images[0];
+  Image output_albedo_image = images[0];
 
   vector<vector<int>> points;
   size_t max_rows = images[0].num_rows();
   size_t max_cols = images[0].num_columns();
 
+  double max_albedo = DBL_MIN;
+  double min_albedo = DBL_MAX;
 // Get all pixels above threshold in all three images
   for (int i = 0; i < max_rows; i++) {
     for (int j = 0; j < max_cols; j++) {
       double brightnessA = images[0].GetPixel(i, j);
       double brightnessB = images[1].GetPixel(i, j);
       double brightnessC = images[2].GetPixel(i, j);
-      if (brightnessA >= threshold){
-        if (brightnessB >= threshold) {
-          if (brightnessC >= threshold) {
-            vector<int> point{i, j};
-            points.push_back(point);
-            vector<vector<double>> illuminations = {{brightnessA}, {brightnessB}, {brightnessC}};
-            vector<vector<double>> result = matrixMultiplication(inverse_sources, illuminations);
-            double albedo = computeLength(result);
-            if (i % step == 0 && j % step == 0){
-              vector<vector<double>> normal_vector = scalarMatrixMultiplication(result, (10/albedo));
-              DrawLine(i, j, i + normal_vector[0][0], j + normal_vector[1][0], 255, &output_normals_image);
-              output_normals_image.SetPixel(i, j, 0);
-            }
-          }
+      if (brightnessA >= threshold && brightnessB >= threshold && brightnessC >= threshold){
+        vector<int> point{i, j};
+        points.push_back(point);
+        vector<vector<double>> illuminations = {{brightnessA}, {brightnessB}, {brightnessC}};
+        vector<vector<double>> result = matrixMultiplication(inverse_sources, illuminations);
+        double albedo = computeLength(result);
+        output_albedo_image.SetPixel(i, j, albedo);
+        max_albedo = albedo > max_albedo ? albedo : max_albedo;
+        min_albedo = albedo < min_albedo ? albedo : min_albedo;
+        if (i % step == 0 && j % step == 0){
+          vector<vector<double>> normal_vector = scalarMatrixMultiplication(result, (10/albedo));
+          DrawLine(i, j, i + normal_vector[0][0], j + normal_vector[1][0], 255, &output_normals_image);
+          output_normals_image.SetPixel(i, j, 0);
         }
+      }
+      else {
+        output_albedo_image.SetPixel(i, j, 0);
       }
     }
   }
 
+  for (vector<int> point: points){
+    double albedo = output_albedo_image.GetPixel(point[0], point[1]);
+    double scaled_value = (albedo - min_albedo) / max_albedo * 255;
+    output_albedo_image.SetPixel(point[0], point[1], scaled_value);
+  }
+
   if (!WriteImage(output_normals_filename, output_normals_image)){
     cout << "Can't write to file " << output_normals_filename << endl;
+  }
+  if (!WriteImage(output_albedos_filename, output_albedo_image)){
+    cout << "Can't write to file " << output_albedos_filename << endl;
   }
 
 
