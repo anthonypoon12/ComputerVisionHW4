@@ -1,5 +1,5 @@
 //
-// <YOUR NAME>
+// Anthony Poon
 // Computational Vision Homework 3
 // Program 3
 //
@@ -11,6 +11,7 @@
 #include <iostream>
 #include <string>
 #include <array>
+#include <vector>
 
 using namespace std;
 using namespace ComputerVisionProjects;
@@ -33,7 +34,35 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
   cout << "Threshold parameter: " << threshold << endl;
   cout << "Output normals filename: " << output_normals_filename << endl;
   cout << "Output albedos filename: " << output_albedos_filename << endl;
-  // .. Code that calls other functions
+
+  vector<Image> images;
+  for (string filename: input_object_filenames) {
+    Image image;
+    if (!ReadImage(filename, &image)) {
+      cout <<"Can't open file " << filename << endl;
+      return;
+    }
+    images.push_back(image);
+  }
+
+  vector<vector<int>> points;
+  size_t max_rows = images[0].num_rows();
+  size_t max_cols = images[0].num_columns();
+
+// Get all pixels above threshold in all three images
+  for (int i = 0; i < max_rows; i++) {
+  for (int j = 0; j < max_cols; j++) {
+    if (images[0].GetPixel(i, j) >= threshold){
+      if (images[1].GetPixel(i, j) >= threshold) {
+        if (images[2].GetPixel(i, j) >= threshold) {
+          vector<int> point{i, j};
+          points.push_back(point);
+        }
+      }
+    }
+  }
+}
+
 }
 
 int main(int argc, char **argv){
