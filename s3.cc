@@ -16,6 +16,68 @@
 using namespace std;
 using namespace ComputerVisionProjects;
 
+double findAdjoin(vector<vector<double>> matrix, int rowNum, int colNum);
+
+// Make sure matrix is square
+double findDeterminant(vector<vector<double>> matrix) {
+  if (matrix.size() == 1) {
+    return matrix[0][0];
+  }
+  if (matrix.size() == 2){
+    double left_diagonal = matrix[0][0] * matrix[1][1];
+    double right_diagonal = matrix[0][1] * matrix[1][0];
+    return left_diagonal - right_diagonal;
+  }
+  else {
+    double sum = 0;
+    // Use first row
+    for (int j = 0; j < matrix[0].size(); j++) {
+      int subtract = j % 2 == 0 ? 1 : -1;
+      sum += matrix[0][j] * subtract * findAdjoin(matrix, 0, j); 
+    }
+    return sum;
+  }
+}
+
+double findAdjoin(vector<vector<double>> matrix, int rowNum, int colNum) {
+  vector<vector<double>> shortened_matrix;
+  for (int i = 0; i < matrix.size(); i++) {
+    vector<double> row;
+    for (int j = 0; j < matrix[i].size(); j++) {
+      if (i != rowNum && j != colNum)
+        row.push_back(matrix[i][j]);
+    }
+    if (row.size() > 0)
+      shortened_matrix.push_back(row);
+  }
+  return findDeterminant(shortened_matrix);
+}
+
+// Make sure determinant is not 0
+vector<vector<double>> findInverseThreeByThree(vector<vector<double>> matrix) {
+  double determinant = findDeterminant(matrix);
+
+  vector<vector<double>> transverse(3, vector<double>(3));
+  vector<vector<double>> adjoint(3, vector<double>(3));
+  for (int i = 0; i < matrix.size(); i++) {
+    for (int j = 0; j < matrix[i].size(); j++) {
+      adjoint[i][j] = findAdjoin(matrix, i, j)/determinant;
+      if ((i+j) % 2 != 0) {
+        adjoint[i][j] = adjoint[i][j] * -1;
+      }
+
+    }
+  }
+  
+  for (int i = 0; i < adjoint.size(); i++) {
+    for (int j = 0; j < adjoint[i].size(); j++) {
+      transverse[j][i] = adjoint[i][j];
+    }
+  }
+  return transverse;
+
+}
+
 // @brief Computes Normals and Albedos
 // @param input_directions_filename the name of the input directions filename (as computed from s2)
 // @param input_object_filenames the names of the the three object files
