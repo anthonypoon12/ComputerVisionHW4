@@ -12,6 +12,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <cmath>
+#include <vector>
 
 using namespace std;
 using namespace ComputerVisionProjects;
@@ -36,6 +38,8 @@ void ComputeAndSaveDirections(const string &input_params_filename, const array<s
   double radius;
   file >> center_x >> center_y >> radius;
   file.close();
+
+  string output_string = "";
 
   // Find brightest point in image
   for (string filename: input_sphere_filenames) {
@@ -63,8 +67,21 @@ void ComputeAndSaveDirections(const string &input_params_filename, const array<s
         }
       }
     }
+
+    double normal_x = bright_x - center_x;
+    double normal_y = bright_y - center_y;
+    double squared_z = radius*radius - normal_x*normal_x - normal_y*normal_y;
+    double normal_z = sqrt(squared_z);
+    cout << center_x << " " << center_y << " " << radius << endl;
+    double distance = sqrt(normal_x*normal_x + normal_y*normal_y + squared_z);
+    output_string += to_string(normal_x/distance*max_brightness) + " ";
+    output_string += to_string(normal_y/distance*max_brightness) + " ";
+    output_string += to_string(normal_z/distance*max_brightness) + "\n";
   }
 
+  ofstream output_file(output_directions_filename);
+  output_file << output_string;
+  output_file.close();
 }
 
 int main(int argc, char **argv){  
