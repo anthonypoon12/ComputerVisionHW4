@@ -113,6 +113,19 @@ vector<vector<double>> matrixMultiplication(vector<vector<double>> matrixA, vect
   return output;
 }
 
+// Make sure m1xn and nxm2
+vector<vector<double>> scalarMatrixMultiplication(vector<vector<double>> matrix, double scalar) {
+  vector<vector<double>> output;
+  for (int i = 0; i < matrix.size(); i++) {
+    vector<double> row;
+    for (int j = 0; j < matrix[i].size(); j++) {
+      row.push_back(matrix[i][j] * scalar);
+    }
+    output.push_back(row);
+  }
+  return output;
+}
+
 // @brief Computes Normals and Albedos
 // @param input_directions_filename the name of the input directions filename (as computed from s2)
 // @param input_object_filenames the names of the the three object files
@@ -175,7 +188,7 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
             vector<vector<double>> illuminations = {{brightnessA}, {brightnessB}, {brightnessC}};
             vector<vector<double>> result = matrixMultiplication(inverse_sources, illuminations);
             double albedo = computeLength(result);
-
+            vector<vector<double>> normal_unit_vector = scalarMatrixMultiplication(result, (1/albedo));
           }
         }
       }
