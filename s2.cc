@@ -1,5 +1,5 @@
 //
-// <YOUR NAME>
+// Anthony Poon
 // Computational Vision Homework 4
 // Program 2
 //
@@ -11,6 +11,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <string>
+#include <fstream>
 
 using namespace std;
 using namespace ComputerVisionProjects;
@@ -28,6 +29,12 @@ void ComputeAndSaveDirections(const string &input_params_filename, const array<s
   cout << "Sphere image filename 2: " << input_sphere_filenames[1] << endl;
   cout << "Sphere image filename 3: " << input_sphere_filenames[2] << endl;
   cout << "Output directions filename: " << output_directions_filename << endl;
+
+  ifstream file(input_params_filename);
+  double center_x;
+  double center_y;
+  double radius;
+  file.close();
 
   // Find brightest point in image
   for (string filename: input_sphere_filenames) {
