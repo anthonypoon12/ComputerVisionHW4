@@ -41,7 +41,6 @@ void ComputeAndSaveDirections(const string &input_params_filename, const array<s
 
   string output_string = "";
 
-  // Find brightest point in image
   for (string filename: input_sphere_filenames) {
     Image image;
     if (!ReadImage(filename, &image)) {
@@ -57,6 +56,7 @@ void ComputeAndSaveDirections(const string &input_params_filename, const array<s
     int bright_x = 0;
     int bright_y = 0;
 
+    // Find brightest point in each image
     for (int i = 0; i < max_rows; i++) {
       for (int j = 0; j < max_cols; j++) {
         int brightness = image.GetPixel(i, j);
@@ -68,12 +68,15 @@ void ComputeAndSaveDirections(const string &input_params_filename, const array<s
       }
     }
 
+    // Calculate for normal vector
     double normal_x = bright_x - center_x;
     double normal_y = bright_y - center_y;
     double squared_z = radius*radius - normal_x*normal_x - normal_y*normal_y;
     double normal_z = sqrt(squared_z);
     cout << center_x << " " << center_y << " " << radius << endl;
     double distance = sqrt(normal_x*normal_x + normal_y*normal_y + squared_z);
+
+    // Use brightness as length
     output_string += to_string(normal_x/distance*max_brightness) + " ";
     output_string += to_string(normal_y/distance*max_brightness) + " ";
     output_string += to_string(normal_z/distance*max_brightness) + "\n";
