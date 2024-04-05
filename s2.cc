@@ -73,7 +73,6 @@ void ComputeAndSaveDirections(const string &input_params_filename, const array<s
     double normal_y = bright_y - center_y;
     double squared_z = radius*radius - normal_x*normal_x - normal_y*normal_y;
     double normal_z = sqrt(squared_z);
-    cout << center_x << " " << center_y << " " << radius << endl;
     double distance = sqrt(normal_x*normal_x + normal_y*normal_y + squared_z);
 
     // Use brightness as length
