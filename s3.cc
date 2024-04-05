@@ -135,6 +135,7 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
     sources.push_back(row);
   }
   file.close();
+  vector<vector<double>> inverse_sources = findInverse(sources);
 
   vector<Image> images;
   for (string filename: input_object_filenames) {
@@ -152,17 +153,25 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
 
 // Get all pixels above threshold in all three images
   for (int i = 0; i < max_rows; i++) {
-  for (int j = 0; j < max_cols; j++) {
-    if (images[0].GetPixel(i, j) >= threshold){
-      if (images[1].GetPixel(i, j) >= threshold) {
-        if (images[2].GetPixel(i, j) >= threshold) {
-          vector<int> point{i, j};
-          points.push_back(point);
+    for (int j = 0; j < max_cols; j++) {
+      double brightnessA = images[0].GetPixel(i, j);
+      double brightnessB = images[1].GetPixel(i, j);
+      double brightnessC = images[2].GetPixel(i, j);
+      if (brightnessA >= threshold){
+        if (brightnessB >= threshold) {
+          if (brightnessC >= threshold) {
+            vector<int> point{i, j};
+            points.push_back(point);
+            vector<vector<double>> illuminations = {{brightnessA}, {brightnessB}, {brightnessC}};
+            vector<vector<double>> result = matrixMultiplication(inverse_sources, illuminations);
+          }
         }
       }
     }
   }
-}
+
+
+
 
 }
 
