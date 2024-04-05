@@ -12,6 +12,8 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <fstream>
+#include <sstream>
 
 using namespace std;
 using namespace ComputerVisionProjects;
@@ -54,7 +56,7 @@ double findAdjoin(vector<vector<double>> matrix, int rowNum, int colNum) {
 }
 
 // Make sure determinant is not 0
-vector<vector<double>> findInverseThreeByThree(vector<vector<double>> matrix) {
+vector<vector<double>> findInverse(vector<vector<double>> matrix) {
   double determinant = findDeterminant(matrix);
 
   vector<vector<double>> transverse(3, vector<double>(3));
@@ -96,6 +98,20 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
   cout << "Threshold parameter: " << threshold << endl;
   cout << "Output normals filename: " << output_normals_filename << endl;
   cout << "Output albedos filename: " << output_albedos_filename << endl;
+
+  vector<vector<double>> sources;
+  ifstream file(input_directions_filename);
+  string line;
+  while(getline(file, line, '\n')) {
+    string num;
+    vector<double> row;
+    stringstream ss(line);
+    while (getline(ss, num, ' ')) {
+      row.push_back(stod(num));
+    }
+    sources.push_back(row);
+  }
+  file.close();
 
   vector<Image> images;
   for (string filename: input_object_filenames) {
