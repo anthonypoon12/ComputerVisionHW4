@@ -80,6 +80,29 @@ vector<vector<double>> findInverse(vector<vector<double>> matrix) {
 
 }
 
+
+// Make sure m1xn and nxm2
+vector<vector<double>> matrixMultiplication(vector<vector<double>> matrixA, vector<vector<double>> matrixB) {
+  vector<vector<double>> output;
+  // For every row in matrix A
+  for (int matrix_A_row = 0; matrix_A_row < matrixA.size(); matrix_A_row++) {
+    vector<double> row;
+
+    // For every column in matrix B
+    for (int matrix_B_col = 0; matrix_B_col < matrixB[0].size(); matrix_B_col++) {
+      double sum = 0;
+      for (int i = 0; i < matrixA[0].size(); i++) {
+        double matrix_A_val = matrixA[matrix_A_row][i];
+        double matrix_B_val = matrixB[i][matrix_B_col];
+        sum += matrix_A_val * matrix_B_val;
+      }
+      row.push_back(sum);
+    }
+    output.push_back(row);
+  }
+  return output;
+}
+
 // @brief Computes Normals and Albedos
 // @param input_directions_filename the name of the input directions filename (as computed from s2)
 // @param input_object_filenames the names of the the three object files
