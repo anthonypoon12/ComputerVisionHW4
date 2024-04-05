@@ -170,6 +170,8 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
     images.push_back(image);
   }
 
+  Image output_normals_image = images[0];
+
   vector<vector<int>> points;
   size_t max_rows = images[0].num_rows();
   size_t max_cols = images[0].num_columns();
@@ -188,14 +190,20 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
             vector<vector<double>> illuminations = {{brightnessA}, {brightnessB}, {brightnessC}};
             vector<vector<double>> result = matrixMultiplication(inverse_sources, illuminations);
             double albedo = computeLength(result);
-            vector<vector<double>> normal_unit_vector = scalarMatrixMultiplication(result, (1/albedo));
+            if (i % step == 0 && j % step == 0){
+              vector<vector<double>> normal_vector = scalarMatrixMultiplication(result, (10/albedo));
+              DrawLine(i, j, i + normal_vector[0][0], j + normal_vector[1][0], 255, &output_normals_image);
+              output_normals_image.SetPixel(i, j, 0);
+            }
           }
         }
       }
     }
   }
 
-
+  if (!WriteImage(output_normals_filename, output_normals_image)){
+    cout << "Can't write to file " << output_normals_filename << endl;
+  }
 
 
 }
