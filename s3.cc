@@ -14,6 +14,7 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <cmath>
 
 using namespace std;
 using namespace ComputerVisionProjects;
@@ -80,6 +81,15 @@ vector<vector<double>> findInverse(vector<vector<double>> matrix) {
 
 }
 
+double computeLength(vector<vector<double>> vect) {
+  double sum = 0;
+  for (int i = 0; i < vect.size(); i++) {
+    for (int j = 0; j < vect[i].size(); j++) {
+      sum += vect[i][j]*vect[i][j];
+    }
+  }
+  return sqrt(sum);
+}
 
 // Make sure m1xn and nxm2
 vector<vector<double>> matrixMultiplication(vector<vector<double>> matrixA, vector<vector<double>> matrixB) {
@@ -164,6 +174,8 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
             points.push_back(point);
             vector<vector<double>> illuminations = {{brightnessA}, {brightnessB}, {brightnessC}};
             vector<vector<double>> result = matrixMultiplication(inverse_sources, illuminations);
+            double albedo = computeLength(result);
+
           }
         }
       }
