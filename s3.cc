@@ -186,7 +186,7 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
   Image output_normals_image = images[0];
   Image output_albedo_image = images[0];
 
-  vector<vector<int>> points;
+  vector<vector<double>> points;
   size_t max_rows = images[0].num_rows();
   size_t max_cols = images[0].num_columns();
 
@@ -199,12 +199,11 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
       double brightnessB = images[1].GetPixel(i, j);
       double brightnessC = images[2].GetPixel(i, j);
       if (brightnessA >= threshold && brightnessB >= threshold && brightnessC >= threshold){
-        vector<int> point{i, j};
-        points.push_back(point);
         vector<vector<double>> illuminations = {{brightnessA}, {brightnessB}, {brightnessC}};
         vector<vector<double>> result = matrixMultiplication(inverse_sources, illuminations);
         double albedo = computeLength(result);
-        output_albedo_image.SetPixel(i, j, albedo);
+        vector<double> point{double(i), double(j), albedo};
+        points.push_back(point);
         max_albedo = albedo > max_albedo ? albedo : max_albedo;
         min_albedo = albedo < min_albedo ? albedo : min_albedo;
         if (i % step == 0 && j % step == 0){
@@ -219,10 +218,10 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
     }
   }
 
-  for (vector<int> point: points){
-    double albedo = output_albedo_image.GetPixel(point[0], point[1]);
-    double scaled_value = albedo/ max_albedo * 255;
-    output_albedo_image.SetPixel(point[0], point[1], scaled_value);
+  for (vector<double> point: points){
+    double albedo = point[2];
+    double scaled_value = (albedo - min_albedo)/ max_albedo * 255;
+    output_albedo_image.SetPixel(int(point[0]), int(point[1]), scaled_value);
   }
 
   if (!WriteImage(output_normals_filename, output_normals_image)){
