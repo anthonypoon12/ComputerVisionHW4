@@ -220,7 +220,8 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
 
   for (vector<double> point: points){
     double albedo = point[2];
-    double scaled_value = (albedo - min_albedo)/ max_albedo * 255;
+    double scaled_value = albedo/ max_albedo * 255;
+    scaled_value = scaled_value > 255 ? 255 : scaled_value;
     output_albedo_image.SetPixel(int(point[0]), int(point[1]), scaled_value);
   }
 
