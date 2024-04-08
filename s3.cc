@@ -2,7 +2,7 @@
 // Anthony Poon
 // Computational Vision Homework 3
 // Program 3
-//
+// Program to create output files that display the normal vectors and albedos of the pixels in the image objects
 
 #include "image.h"
 
@@ -22,7 +22,8 @@ using namespace ComputerVisionProjects;
 
 double findAdjoin(vector<vector<double>> matrix, int rowNum, int colNum);
 
-// Make sure matrix is square
+// @brief finds determinant of matrix
+// @param matrix a 2d vector representing square matrix
 double findDeterminant(vector<vector<double>> matrix) {
   if (matrix.size() == 1) {
     return matrix[0][0];
@@ -43,6 +44,10 @@ double findDeterminant(vector<vector<double>> matrix) {
   }
 }
 
+// @brief finds determinant of adjoin based on position in matrix
+// @param matrix a 2d vector representing square matrix
+// @param rowNum row coordinate value
+// @param colNum column coordinate value
 double findAdjoin(vector<vector<double>> matrix, int rowNum, int colNum) {
   vector<vector<double>> shortened_matrix;
   for (int i = 0; i < matrix.size(); i++) {
@@ -57,7 +62,8 @@ double findAdjoin(vector<vector<double>> matrix, int rowNum, int colNum) {
   return findDeterminant(shortened_matrix);
 }
 
-// Make sure determinant is not 0
+// @brief finds inverse of matrix
+// @param matrix a 2d vector representing square matrix
 vector<vector<double>> findInverse(vector<vector<double>> matrix) {
   double determinant = findDeterminant(matrix);
 
@@ -82,6 +88,8 @@ vector<vector<double>> findInverse(vector<vector<double>> matrix) {
 
 }
 
+// @brief computes length of vector
+// @param vect 2d vector. May be any shape (i.e. 3x1)
 double computeLength(vector<vector<double>> vect) {
   double sum = 0;
   for (int i = 0; i < vect.size(); i++) {
@@ -92,7 +100,9 @@ double computeLength(vector<vector<double>> vect) {
   return sqrt(sum);
 }
 
-// Make sure m1xn and nxm2
+// @brief uses matrix multiplication on two matrices
+// @param matrixA a 2d vector representing square matrix
+// @param matrixB a 2d vector representing square matrix
 vector<vector<double>> matrixMultiplication(vector<vector<double>> matrixA, vector<vector<double>> matrixB) {
   vector<vector<double>> output;
   // For every row in matrix A
@@ -114,7 +124,9 @@ vector<vector<double>> matrixMultiplication(vector<vector<double>> matrixA, vect
   return output;
 }
 
-// Make sure m1xn and nxm2
+// @brief multiples scalar to each element in matrix and outputting new matrix
+// @param matrix a 2d vector representing square matrix
+// @param scalar a number to multiply to each element
 vector<vector<double>> scalarMatrixMultiplication(vector<vector<double>> matrix, double scalar) {
   vector<vector<double>> output;
   for (int i = 0; i < matrix.size(); i++) {
@@ -209,7 +221,7 @@ void ComputeAndSaveNormalsAndAlbedoImages(const string &input_directions_filenam
 
   for (vector<int> point: points){
     double albedo = output_albedo_image.GetPixel(point[0], point[1]);
-    double scaled_value = (albedo - min_albedo) / max_albedo * 255;
+    double scaled_value = albedo/ max_albedo * 255;
     output_albedo_image.SetPixel(point[0], point[1], scaled_value);
   }
 

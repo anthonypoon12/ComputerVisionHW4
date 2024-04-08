@@ -2,7 +2,7 @@
 // Anthony Poon
 // Computational Vision Homework 4
 // Program 1
-//
+// Program to calculate center and radius of object based on horizontal and vertical diameters
 
 #include "image.h"
 #include "DisjSets.h"

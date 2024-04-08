@@ -2,7 +2,7 @@
 // Anthony Poon
 // Computational Vision Homework 4
 // Program 2
-//
+// Program to calculate light source directions based on brightest points of object
 
 #include "image.h"
 
